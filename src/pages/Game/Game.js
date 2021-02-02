@@ -6,19 +6,45 @@ import "./Game.css"
 
 export default class Game extends React.Component {
     
+    static dirs = {
+        'up' : { axis : 'y', d : 1 },
+        'right' : { axis : 'x', d : 1 },
+        'down' : { axis : 'y', d : -1 },
+        'left' : { axis : 'x', d : -1 }
+    }
+
     constructor(props){
         super(props)
+
+        this.keyPressHandlers = {
+
+        }
+
         this.snake = {
-            body : [{x:1, y:1}],
-                move(){
-                    this.body[0].x = (this.body[0].x + 1)%10
-                }
+
+            body : [{y:1, x:1}],
+
+            currentDir : Game.dirs['right'],
+
+            move : () => {
+                this = this.snake
+                this.body[0][this.currentDir.axis] = (this.body[0][this.currentDir.axis] + 1)%10
+            },
+
+            turn : (dir) => {
+                if(dir.axis !== this.currentDir.axis)
+                    this.currentDir = dir;
+            }
+
+            // changeDir(dir){
+                
+            // }
         }
         this.state = {
             board : new Array(10).fill('').map(row => new Array(10).fill('field')),
             score: 0
         }
-        this.state.board[this.snake.body[0].x][this.snake.body[0].y] = 'snakeHead'
+        this.state.board[this.snake.body[0].y][this.snake.body[0].x] += ' snakeHead'
     }
 
     componentDidMount(){
@@ -35,7 +61,7 @@ export default class Game extends React.Component {
     tick(){        
         let nextBoard = new Array(10).fill('').map(row => new Array(10).fill('field'))
         this.snake.move()
-        nextBoard[this.snake.body[0].x][this.snake.body[0].y] = 'snakeHead'
+        nextBoard[this.snake.body[0].y][this.snake.body[0].x] += ' snakeHead'
         // console.log(this.state.board[this.snake.body[0].x][this.snake.body[0].y])
         // console.log(this.state.board)
         this.setState((prev)=>({
@@ -46,19 +72,20 @@ export default class Game extends React.Component {
 
     render(){
         return (
-            <div className="gameContainer">
+            <div className="gameContainer" onKeyPress={(e)=> console.log(e.key)}>
                 <div className="head">Score:{this.state.score}</div>
-                {
-                    this.state.board.map(row => {
-                        return(
-                        <tr>
-                            {
-                                row.map((cell)=><td className={cell}></td>)
-                            }
-                        </tr>)
-                    })
-                }
-            </div>
+                {<div className="boardContainer">
+                        <table className={"board"}>{
+                            this.state.board.map(row => {
+                                return(
+                                    <tr>
+                                        {row.map((cell)=><td className={cell}></td>)}
+                                    </tr>
+                                )
+                            })
+                        }</table>
+                    </div>
+                }</div>
         )
     }
 }
