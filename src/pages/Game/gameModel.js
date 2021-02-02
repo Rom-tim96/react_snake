@@ -20,29 +20,54 @@ class Unit {
 
 class Snake extends Unit {
 
-    static ;
+    static directions = {
+        'up' : { axis : 'y', d : 1 },
+        'right' : { axis : 'x', d : 1 },
+        'down' : { axis : 'y', d : -1 },
+        'left' : { axis : 'x', d : -1 }
+    }
 
-    constructor(place){
-        super(place)
+    constructor(space){
+        super(space)
 
-        this.eated = []
+        // this.eated = []
         this.moveDir = Snake.directions['right']
     }
 
-    move(dir = this.currDir){
-        //Двигаем голову дальше в текущем направлении
-        this.body.unshift(this.body[0][X], this.body[0][Y]);
-        this.body[0][dir.axis] += dir.d; // * 1
-
-        //Компенсируем приращение
-        this.body.pop();
+    move(){
+        this.body[0][this.currentDir.axis] = (this.body[0][this.currentDir.axis] + 1)%10
     }
+
+    // move(dir = this.currDir){
+    //     //Двигаем голову дальше в текущем направлении
+    //     this.body.unshift(this.body[0][X], this.body[0][Y]);
+    //     this.body[0][dir.axis] += dir.d; // * 1
+
+    //     //Компенсируем приращение
+    //     this.body.pop();
+    // }
 }
 
 class Space {
 
-    constructor(dimensions = {x: 10, y: 10}){
+    constructor({x, y}){
+        this.board = []
+        for(let i = 1; i <= x; ++i){   
+            board[i] = []         
+            for(let j = 1; j <= y; ++j){           
+                board[i][j] = {
+                    pos : { x: i, y: j },
+                    content : 'empty'
+                }
+            }
+        }
+
         this.content = new Array(dimensions.x).fill('').map(row => new Array(dimensions.y))
+        this.filledSection = new WeakSet
+    }
+
+    getPos(pos){
+        this.filledSection.add()
     }
 
     getRndPos(){//Вынести в библиотеку
